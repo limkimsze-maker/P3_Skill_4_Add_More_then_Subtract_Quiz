@@ -418,6 +418,18 @@
       text-align:center;
       padding: 8px 0 2px;
     }
+
+    /* Back to Main Menu (bottom centre, non-blocking) */
+    .wrap{ padding-bottom: calc(34px + 64px); } /* makes space so the fixed button won't cover content */
+    .mainMenuDock{
+      position: fixed;
+      left: 50%;
+      bottom: max(12px, env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      z-index: 14;
+      pointer-events: none; /* so it won't block clicks behind it */
+    }
+    .mainMenuDock .btn{ pointer-events: auto; }
   </style>
 </head>
 
@@ -600,6 +612,11 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Back to Main Menu (bottom centre) -->
+  <div class="mainMenuDock">
+    <button class="btn" id="mainMenuBtn" type="button">⬅ Back to Main Menu</button>
   </div>
 
 <script>
@@ -1158,7 +1175,18 @@ rebuildQuestionSet();
 loadQuestion(0);
 updateSideUI();
 </script>
+
+<script>
+  (function(){
+    const btn = document.getElementById("mainMenuBtn");
+    if(btn){
+      btn.addEventListener("click", ()=>{
+        window.location.href = "https://limkimsze-maker.github.io/P3_Mental_Sum_Challenge/";
+      });
+    }
+  })();
+</script>
+
   <script src="https://limkimsze-maker.github.io/assets/nav.js"></script>
 </body>
 </html>
-
