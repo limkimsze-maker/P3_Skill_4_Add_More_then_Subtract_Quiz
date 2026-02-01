@@ -1,0 +1,1162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- /quiz (Kim Sze) | Designed by Lim Kim Sze © 2026 -->
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Near 100 Addition — Timed Practice (8 Q)</title>
+
+  <!-- Favicon (Kim Sze) -->
+  <link rel="icon" href="./kimsze_sharp16.ico?v=20260111a" sizes="any">
+  <link rel="shortcut icon" href="./kimsze_sharp16.ico?v=20260111a">
+
+  <!-- ✅ Always-Clear on Load (Default Build Contract) -->
+  <script>
+  (function(){
+    const ACTIVITY_ID = "https://limkimsze-maker.github.io/Quiz_Near100_Add_95_99/";
+    try{
+      const toDelete = [];
+      for(let i=0;i<localStorage.length;i++){
+        const k = localStorage.key(i);
+        if(!k) continue;
+        if(k === ACTIVITY_ID) toDelete.push(k);
+        if(k.startsWith(ACTIVITY_ID+"::")) toDelete.push(k);
+        if(k.startsWith("sls_scope::"+ACTIVITY_ID)) toDelete.push(k);
+        if(k.startsWith("UFCO-firstSubmit::"+ACTIVITY_ID)) toDelete.push(k);
+        if(k.startsWith("sls_unlike_payload::"+ACTIVITY_ID)) toDelete.push(k);
+      }
+      toDelete.forEach(k=>{ try{ localStorage.removeItem(k);}catch{} });
+      try{
+        const bc = new BroadcastChannel("xapi-state");
+        bc.postMessage({type:"clear", activityId: ACTIVITY_ID, ts: Date.now()});
+        bc.close();
+      }catch{}
+    }catch{}
+  })();
+  </script>
+
+  <style>
+    :root{
+      --ink:#0f172a;
+      --muted:#64748b;
+      --card:rgba(255,255,255,.85);
+      --line:rgba(15,23,42,.10);
+      --shadow: 0 18px 50px rgba(2,6,23,.14);
+      --radius: 22px;
+
+      --good:#16a34a;
+      --bad:#ef4444;
+      --warn:#f59e0b;
+
+      --accent:#7c3aed;
+      --accent2:#06b6d4;
+      --accent3:#22c55e;
+      --font: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--font);
+      color:var(--ink);
+      min-height:100dvh;
+      overflow-x:hidden;
+      background:
+        radial-gradient(900px 500px at 18% 10%, rgba(124,58,237,.22), transparent 60%),
+        radial-gradient(900px 500px at 85% 15%, rgba(6,182,212,.18), transparent 58%),
+        radial-gradient(900px 500px at 45% 92%, rgba(34,197,94,.12), transparent 58%),
+        linear-gradient(180deg, #f7fbff, #fff7f1);
+    }
+
+    /* floating stars */
+    .stars{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0;}
+    .star{
+      position:absolute; width:6px; height:6px; border-radius:999px;
+      background:rgba(255,255,255,.95);
+      box-shadow: 0 0 0 4px rgba(255,255,255,.20), 0 0 22px rgba(255,255,255,.45);
+      animation: drift 9s linear infinite;
+      opacity:.9;
+    }
+    @keyframes drift{
+      from{ transform: translateY(110vh) scale(.9); opacity:0; }
+      10%{ opacity:.9; }
+      to{ transform: translateY(-20vh) scale(1.15); opacity:0; }
+    }
+
+    .wrap{
+      position:relative; z-index:1;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 14px 34px;
+    }
+
+    .topbar{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      flex-wrap:wrap;
+      margin: 6px 0 12px;
+    }
+
+    .badge{
+      display:inline-flex; align-items:center; gap:10px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,.75);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 26px rgba(2,6,23,.08);
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+    }
+    .badge strong{font-size:14px}
+    .small{font-size:12px; color:var(--muted)}
+    .pill{
+      padding: 6px 10px; border-radius:999px;
+      background: rgba(124,58,237,.10);
+      border:1px solid rgba(124,58,237,.20);
+      color:#4c1d95;
+      font-weight:900;
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;}
+    .btn{
+      appearance:none; border:1px solid var(--line); background: rgba(255,255,255,.85);
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-weight:900;
+      color:var(--ink);
+      cursor:pointer;
+      box-shadow: 0 10px 24px rgba(2,6,23,.08);
+      transition: transform .06s ease, box-shadow .18s ease, background .18s ease;
+      display:inline-flex; align-items:center; gap:10px;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 14px 30px rgba(2,6,23,.12); }
+    .btn:active{ transform: translateY(0px); }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(6,182,212,.92));
+      color:white; border-color: rgba(255,255,255,.12);
+    }
+    .btn.danger{
+      background: rgba(239,68,68,.10);
+      border-color: rgba(239,68,68,.22);
+      color:#991b1b;
+    }
+    .btn[disabled]{opacity:.55; cursor:not-allowed; transform:none;}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 14px;
+      align-items:stretch;
+    }
+    @media (max-width: 860px){
+      .grid{grid-template-columns:1fr;}
+      .actions{justify-content:flex-start;}
+    }
+
+    .card{
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+      position:relative;
+    }
+    .head{
+      padding: 14px 16px 10px;
+      border-bottom:1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .body{ padding: 16px; }
+
+    .progress{
+      display:flex; gap:6px; align-items:center; flex-wrap:wrap;
+    }
+    .dot{
+      width: 32px; height: 32px; border-radius:999px;
+      display:grid; place-items:center;
+      font-weight:950; font-size:13px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 10px 18px rgba(2,6,23,.06);
+    }
+    .dot.current{ outline: 3px solid rgba(124,58,237,.28); }
+    .dot.good{ background: rgba(34,197,94,.12); border-color: rgba(34,197,94,.25); color:#14532d;}
+    .dot.bad{ background: rgba(239,68,68,.10); border-color: rgba(239,68,68,.22); color:#7f1d1d;}
+    .dot.done{ background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.25); color:#78350f;}
+
+    .timerBox{
+      display:flex; gap:10px; align-items:center;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 10px 18px rgba(2,6,23,.06);
+      font-weight:950;
+      white-space:nowrap;
+    }
+    .timerNum{ font-variant-numeric: tabular-nums; font-size: 16px; }
+    .timerBar{ height:10px; width: 140px; border-radius: 999px; background: rgba(15,23,42,.08); overflow:hidden;}
+    .timerFill{
+      height:100%;
+      width:100%;
+      background: linear-gradient(90deg, rgba(34,197,94,.95), rgba(6,182,212,.92), rgba(124,58,237,.92));
+      transform-origin:left center;
+      transform: scaleX(1);
+      transition: transform .25s linear;
+    }
+
+    .question{
+      display:grid; gap: 12px;
+      place-items:center;
+      padding: 10px 0 4px;
+    }
+    .bigMath{
+      font-weight: 1000;
+      font-size: clamp(44px, 6.3vw, 72px);
+      letter-spacing: -1px;
+      display:flex; gap:16px; align-items:baseline;
+      text-shadow: 0 10px 24px rgba(2,6,23,.10);
+    }
+    .bigMath .plus{ color: rgba(124,58,237,.95); }
+    .bigMath .eq{ color: rgba(6,182,212,.95); }
+
+    .answerRow{
+      display:flex; gap: 10px; align-items:center; justify-content:center;
+      flex-wrap:wrap;
+    }
+    .input{
+      width: 170px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 2px solid rgba(124,58,237,.18);
+      background: rgba(255,255,255,.92);
+      font-size: 22px;
+      font-weight: 950;
+      text-align:center;
+      outline:none;
+      box-shadow: 0 14px 28px rgba(2,6,23,.10);
+      transition: border-color .18s ease, transform .06s ease;
+    }
+    .input:focus{ border-color: rgba(124,58,237,.45); transform: translateY(-1px); }
+    .shake{ animation: shake .22s linear 0s 2; }
+    @keyframes shake{ 0%{transform:translateX(0)}25%{transform:translateX(-7px)}50%{transform:translateX(7px)}75%{transform:translateX(-5px)}100%{transform:translateX(0)} }
+
+    /* Hint panel: show ONLY when wrong / time up */
+    #hintBox{ display:none; }
+    #hintBox.show{ display:block; }
+
+    .hint{
+      margin-top: 12px;
+      border-radius: 18px;
+      border: 1px dashed rgba(100,116,139,.35);
+      background: rgba(248,250,252,.72);
+      padding: 12px 12px;
+      color: var(--muted);
+      line-height: 1.35;
+      width:100%;
+    }
+    .hint strong{color: var(--ink)}
+
+    .stepGrid{
+      margin-top: 10px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .stepBox{
+      border-radius: 14px;
+      border: 2px solid rgba(15,23,42,.10);
+      background: rgba(255,255,255,.75);
+      padding: 10px 10px;
+    }
+    .stepBox .label{
+      font-weight: 1000;
+      letter-spacing:.4px;
+      margin-bottom: 6px;
+      display:inline-block;
+      padding: 2px 8px;
+      border-radius:999px;
+      border:1px solid rgba(15,23,42,.10);
+      background: rgba(15,23,42,.03);
+    }
+    .step1{ border-color: rgba(245,158,11,.45); }
+    .step1 .label{ color:#9a3412; background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.28); }
+    .step2{ border-color: rgba(6,182,212,.45); }
+    .step2 .label{ color:#0e7490; background: rgba(6,182,212,.12); border-color: rgba(6,182,212,.28); }
+
+    .eqLine{
+      font-weight: 1000;
+      color: var(--ink);
+      font-size: 16px;
+      margin-top: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal{
+      margin-top: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(239,68,68,.22);
+      background: rgba(239,68,68,.07);
+      padding: 12px 12px;
+      display:none;
+      width:100%;
+    }
+    .reveal.show{display:block;}
+    .reveal .ans{
+      font-weight:1000;
+      font-size: 18px;
+      color:#7f1d1d;
+    }
+
+    .side{ display:grid; gap: 14px; }
+
+    .mascot{
+      display:grid;
+      grid-template-columns: 120px 1fr;
+      gap: 12px;
+      align-items:center;
+    }
+    .buddyIcon{
+      width: 120px; height:120px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.65);
+      border: 1px solid rgba(15,23,42,.10);
+      box-shadow: 0 12px 26px rgba(2,6,23,.08);
+      display:grid; place-items:center;
+      font-size: 54px;
+      animation: floaty 2.8s ease-in-out infinite;
+      user-select:none;
+    }
+    @keyframes floaty{ 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-8px) } }
+
+    .talk{
+      background: rgba(255,255,255,.88);
+      border:1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px 12px;
+      box-shadow: 0 12px 26px rgba(2,6,23,.08);
+    }
+    .talk h3{margin:0 0 6px; font-size:16px}
+    .talk p{margin:0; color:var(--muted); line-height:1.35; font-size:13px}
+
+    .scoreBox{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding: 12px 12px;
+      border-radius: 18px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.88);
+      box-shadow: 0 12px 26px rgba(2,6,23,.08);
+    }
+    .scoreBig{ font-weight: 1000; font-size: 22px; letter-spacing:-.5px; }
+    .scoreBig span{ color: rgba(124,58,237,.95); }
+    .chip{
+      font-weight: 900;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(15,23,42,.03);
+      color: var(--muted);
+      white-space:nowrap;
+    }
+
+    /* confetti */
+    #confetti{ position:fixed; inset:0; pointer-events:none; z-index:30; display:none; }
+
+    /* settings panel */
+    .timingPanel{
+      position:fixed; right:14px; top:72px;
+      width:min(360px, calc(100vw - 28px));
+      z-index:15;
+      display:none;
+    }
+    .timingPanel.show{display:block;}
+    .panel{
+      background: rgba(255,255,255,.92);
+      border:1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 18px 60px rgba(2,6,23,.18);
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+    }
+    .phead{
+      padding: 12px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      font-weight: 950;
+    }
+    .pbody{ padding: 12px 14px; color:var(--muted); }
+    .rangeRow{ display:flex; gap:12px; align-items:center; }
+    input[type="range"]{ width: 100%; }
+    .kv{ font-variant-numeric: tabular-nums; font-weight: 1000; color: var(--ink); }
+
+    /* results screen */
+    .results{
+      display:none;
+      padding: 14px 0 6px;
+    }
+    .results.show{display:block;}
+    .scoreHuge{
+      font-weight:1000;
+      font-size: clamp(28px, 5vw, 46px);
+      letter-spacing:-.8px;
+      text-align:center;
+    }
+    .scoreHuge span{ color: rgba(124,58,237,.95); }
+    .resultMsg{
+      text-align:center;
+      color:var(--muted);
+      margin-top: 8px;
+      font-weight:800;
+    }
+
+    footer{
+      margin-top: 12px;
+      color: rgba(100,116,139,.9);
+      font-size: 12px;
+      text-align:center;
+      padding: 8px 0 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="stars" id="stars"></div>
+  <canvas id="confetti"></canvas>
+
+  <!-- Timing panel -->
+  <div class="timingPanel" id="timingPanel" aria-hidden="true">
+    <div class="panel">
+      <div class="phead">
+        <div>⚙️ Timing Settings</div>
+        <button class="btn" id="closeTiming" type="button" aria-label="Close timing panel">✖</button>
+      </div>
+      <div class="pbody">
+        <div class="small" style="margin-bottom:10px;">
+          Default is <b>25 seconds</b>. Change it here (applies immediately).
+        </div>
+        <div class="rangeRow">
+          <input id="timeRange" type="range" min="10" max="60" step="1" value="25" />
+          <div class="kv"><span id="timeVal">25</span>s</div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+          <button class="btn primary" id="applyTiming" type="button">Apply & Restart Timer</button>
+          <button class="btn" id="resetTiming" type="button">Reset to 25s</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="topbar">
+      <div class="badge">
+        <div style="font-size:18px;">💯</div>
+        <div>
+          <div><strong>Near 100 Addition</strong> <span class="pill" id="qCountPill">8 questions</span></div>
+          <div class="small">Question <b id="qIndexTxt">1</b> of <b id="qTotalTxt">8</b></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <div class="timerBox" title="Time left">
+          ⏱️ <span class="timerNum" id="timeLeft">25</span>s
+          <div class="timerBar" aria-hidden="true"><div class="timerFill" id="timerFill"></div></div>
+        </div>
+        <button class="btn" id="soundBtn" type="button">🔊 Sound: ON</button>
+        <button class="btn" id="timingBtn" type="button">⚙️ Timing</button>
+        <button class="btn danger" id="restartAll" type="button">↻ Restart</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Main -->
+      <div class="card">
+        <div class="head">
+          <div class="progress" id="progressRow"></div>
+          <div class="small" id="statusTxt">Make 100 + 100 = 200, then subtract the extra!</div>
+        </div>
+
+        <div class="body">
+          <!-- Question view -->
+          <div id="questionView">
+            <div class="question">
+              <div class="bigMath" aria-label="Addition question">
+                <span id="aTxt">98</span>
+                <span class="plus">+</span>
+                <span id="bTxt">97</span>
+                <span class="eq">=</span>
+                <span style="opacity:.35;">?</span>
+              </div>
+
+              <div class="answerRow">
+                <input class="input" id="ansInput" inputmode="numeric" pattern="[0-9]*" autocomplete="off"
+                       placeholder="Answer" aria-label="Type your answer"/>
+                <button class="btn primary" id="checkBtn" type="button">Check ✅</button>
+                <button class="btn" id="tryAgainBtn" type="button" style="display:none;">Try Again</button>
+                <button class="btn" id="nextBtn" type="button" disabled>Next ➜</button>
+              </div>
+
+              <!-- Hidden by default, shown only on wrong / time up -->
+              <div class="hint" id="hintBox">
+                <strong>Method: Make 100 + 100, then subtract the extra.</strong>
+
+                <div class="stepGrid" id="stepsBox">
+                  <!-- filled by JS -->
+                </div>
+
+                <div class="small" style="margin-top:8px;">
+                  Tip: Find how much each number needs to reach 100, then subtract the total extra from 200.
+                </div>
+              </div>
+
+              <div class="reveal" id="revealBox">
+                <div class="ans">⏰ Time’s up — Answer: <span id="revealAns">—</span></div>
+                <div class="small" style="margin-top:6px;">
+                  You can press <b>Try Again</b> to practice (no marks), or <b>Next</b> to move on.
+                </div>
+              </div>
+            </div>
+
+            <footer>Designed by Lim Kim Sze © 2026</footer>
+          </div>
+
+          <!-- Results view -->
+          <div class="results" id="resultsView">
+            <div class="scoreHuge">Score: <span id="finalScore">0</span> / <span id="finalTotal">8</span></div>
+            <div class="resultMsg" id="finalMsg">Nice work!</div>
+
+            <div style="height:14px"></div>
+            <div class="hint">
+              <strong>Progress</strong>
+              <div class="small" style="margin-top:6px;">
+                🟩 correct on first try (scores) &nbsp;|&nbsp;
+                🟧 correct after a wrong try (0 mark) &nbsp;|&nbsp;
+                🟥 time up (0 mark)
+              </div>
+              <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;" id="finalDots"></div>
+            </div>
+
+            <div style="height:14px"></div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+              <button class="btn primary" id="restartFromResults" type="button">↻ Restart the 8-question challenge</button>
+            </div>
+
+            <footer>Designed by Lim Kim Sze © 2026</footer>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side -->
+      <div class="side">
+        <div class="card">
+          <div class="head">
+            <div style="font-weight:1000;">Math Buddy</div>
+            <div class="chip" id="modeChip">Timed mode</div>
+          </div>
+          <div class="body">
+            <div class="mascot">
+              <div class="buddyIcon" aria-hidden="true">💯</div>
+              <div class="talk">
+                <h3 id="buddyTitle">Mission: Near 100!</h3>
+                <p id="buddyText">Make 100 + 100 = 200, then subtract the extra.</p>
+              </div>
+            </div>
+
+            <div style="height:12px"></div>
+
+            <div class="scoreBox">
+              <div>
+                <div class="small">Total score</div>
+                <div class="scoreBig"><span id="scoreNow">0</span> / <span id="scoreTotal">8</span></div>
+              </div>
+              <div class="chip" id="timingChip">Time: 25s</div>
+            </div>
+
+            <div style="height:12px"></div>
+            <div class="small">
+              ✅ Correct (first try) = confetti + auto next (2s)<br/>
+              ❌ Any wrong try = 0 mark for that question<br/>
+              ⏰ Time up = answer revealed + Try Again (practice)
+            </div>
+
+            <div style="height:10px"></div>
+            <div class="small" style="color:var(--muted);">
+              Range: both numbers are from <b>95 to 99</b>.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="head">
+            <div style="font-weight:1000;">Quick Steps</div>
+            <div class="pill">200 − extra</div>
+          </div>
+          <div class="body" style="color:var(--muted); line-height:1.4;">
+            <div><b>Step 1:</b> Find the extra to make each number 100.</div>
+            <div><b>Step 2:</b> 100 + 100 = 200.</div>
+            <div><b>Step 3:</b> Subtract the total extra from 200.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* =========================
+   /quiz: NEAR 100 (95–99)
+   ========================= */
+const RANGE_MIN = 95;
+const RANGE_MAX = 99;
+const TOTAL_Q = 8;
+
+const $ = (id)=>document.getElementById(id);
+const els = {
+  stars: $("stars"),
+  confetti: $("confetti"),
+  timingPanel: $("timingPanel"),
+  timingBtn: $("timingBtn"),
+  closeTiming: $("closeTiming"),
+  timeRange: $("timeRange"),
+  timeVal: $("timeVal"),
+  applyTiming: $("applyTiming"),
+  resetTiming: $("resetTiming"),
+  soundBtn: $("soundBtn"),
+  restartAll: $("restartAll"),
+
+  qCountPill: $("qCountPill"),
+  qIndexTxt: $("qIndexTxt"),
+  qTotalTxt: $("qTotalTxt"),
+  progressRow: $("progressRow"),
+  statusTxt: $("statusTxt"),
+
+  aTxt: $("aTxt"),
+  bTxt: $("bTxt"),
+  ansInput: $("ansInput"),
+  checkBtn: $("checkBtn"),
+  tryAgainBtn: $("tryAgainBtn"),
+  nextBtn: $("nextBtn"),
+
+  stepsBox: $("stepsBox"),
+  hintBox: $("hintBox"),
+  revealBox: $("revealBox"),
+  revealAns: $("revealAns"),
+
+  timeLeft: $("timeLeft"),
+  timerFill: $("timerFill"),
+
+  buddyTitle: $("buddyTitle"),
+  buddyText: $("buddyText"),
+  scoreNow: $("scoreNow"),
+  scoreTotal: $("scoreTotal"),
+  timingChip: $("timingChip"),
+  modeChip: $("modeChip"),
+
+  questionView: $("questionView"),
+  resultsView: $("resultsView"),
+  finalScore: $("finalScore"),
+  finalTotal: $("finalTotal"),
+  finalMsg: $("finalMsg"),
+  finalDots: $("finalDots"),
+  restartFromResults: $("restartFromResults")
+};
+
+let soundOn = true;
+const sndWrong = new Audio("wrong.mp3");
+const sndCorrect = new Audio("correct.mp3");
+function playSound(which){
+  if(!soundOn) return;
+  const a = which==="correct" ? sndCorrect : sndWrong;
+  try{ a.currentTime = 0; a.play().catch(()=>{}); }catch{}
+}
+
+/* fun stars */
+(function initStars(){
+  const n = 18;
+  for(let i=0;i<n;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random()*100 + 'vw';
+    s.style.animationDelay = (Math.random()*9) + 's';
+    s.style.animationDuration = (7 + Math.random()*7) + 's';
+    s.style.opacity = (0.65 + Math.random()*0.35).toFixed(2);
+    const size = 4 + Math.random()*6;
+    s.style.width = size+'px';
+    s.style.height = size+'px';
+    els.stars.appendChild(s);
+  }
+})();
+
+/* =========================
+   QUESTION SET (generated)
+   ========================= */
+function randInt(a,b){
+  a = Math.ceil(a); b = Math.floor(b);
+  return Math.floor(Math.random()*(b-a+1))+a;
+}
+function generateNear100(total, minV, maxV){
+  const min = Math.min(minV, maxV);
+  const max = Math.max(minV, maxV);
+  const used = new Set();
+  const out = [];
+  let guard = 0;
+
+  // avoid duplicates (treat (a,b) same as (b,a))
+  while(out.length < total && guard < 5000){
+    guard++;
+    const a = randInt(min, max);
+    const b = randInt(min, max);
+    const key = (a<=b) ? (a+"|"+b) : (b+"|"+a);
+    if(used.has(key)) continue;
+    used.add(key);
+    out.push({a,b});
+  }
+  while(out.length < total){
+    out.push({a: randInt(min,max), b: randInt(min,max)});
+  }
+  return out;
+}
+
+let QUESTIONS = generateNear100(TOTAL_Q, RANGE_MIN, RANGE_MAX);
+
+/* =========================
+   GAME STATE
+   ========================= */
+let idx = 0;
+let score = 0;
+
+/*
+status:
+- null    : not finished
+- correct : correct on first try (scores)
+- done    : eventually correct but had a wrong try (0 mark)
+- timeout : time up (0 mark)
+*/
+let status = Array(QUESTIONS.length).fill(null);
+
+/* Scoring rule: ANY first wrong attempt => 0 marks for that question */
+let hadWrong = Array(QUESTIONS.length).fill(false);
+
+let timingSeconds = 25;
+let secondsTotal = timingSeconds;
+let secondsLeft = secondsTotal;
+let timer = null;
+
+let locked = false;
+let timedOutThisQ = false;
+let practiceMode = false; // after time-up, Try Again is practice (no marks)
+
+function setStatus(text, kind){
+  els.statusTxt.textContent = text;
+  els.statusTxt.style.color = kind==="good" ? "var(--good)" :
+                              kind==="bad"  ? "var(--bad)"  : "var(--muted)";
+}
+
+function renderProgress(){
+  els.progressRow.innerHTML = "";
+  for(let i=0;i<QUESTIONS.length;i++){
+    const d = document.createElement("div");
+    d.className = "dot";
+    if(i===idx) d.classList.add("current");
+    if(status[i]==="correct") d.classList.add("good");
+    if(status[i]==="timeout") d.classList.add("bad");
+    if(status[i]==="done") d.classList.add("done");
+    d.textContent = String(i+1);
+    els.progressRow.appendChild(d);
+  }
+}
+
+function updateSideUI(){
+  els.scoreNow.textContent = String(score);
+  els.scoreTotal.textContent = String(QUESTIONS.length);
+  els.timingChip.textContent = `Time: ${secondsTotal}s`;
+  els.modeChip.textContent = practiceMode ? "Practice mode" : "Timed mode";
+  els.soundBtn.textContent = soundOn ? "🔊 Sound: ON" : "🔇 Sound: OFF";
+}
+
+function setTimerVisual(){
+  els.timeLeft.textContent = String(secondsLeft);
+  const ratio = Math.max(0, Math.min(1, secondsLeft / secondsTotal));
+  els.timerFill.style.transform = `scaleX(${ratio})`;
+}
+
+function stopTimer(){
+  if(timer){ clearInterval(timer); timer = null; }
+}
+
+function startTimer(){
+  stopTimer();
+  secondsTotal = timingSeconds;
+  secondsLeft = secondsTotal;
+
+  locked = false;
+  practiceMode = false;
+  timedOutThisQ = false;
+
+  els.ansInput.disabled = false;
+  els.ansInput.value = "";
+  els.checkBtn.disabled = false;
+
+  /* IMPORTANT: Next disabled during timed attempt; enabled only after time-up (or practice) */
+  els.nextBtn.disabled = true;
+
+  els.tryAgainBtn.style.display = "none";
+  els.revealBox.classList.remove("show");
+  els.hintBox.classList.remove("show"); // hidden until wrong/time-up
+
+  setStatus("Make 100 + 100 = 200, then subtract the extra!", "neutral");
+  els.buddyTitle.textContent = "Mission: Near 100!";
+  els.buddyText.textContent = "Make 100 + 100 = 200, then subtract the extra.";
+  updateSideUI();
+  setTimerVisual();
+
+  timer = setInterval(()=>{
+    if(locked) return;
+    secondsLeft--;
+    setTimerVisual();
+    if(secondsLeft <= 0){
+      stopTimer();
+      onTimeUp();
+    }
+  }, 1000);
+}
+
+/* Confetti */
+function confettiBoom(ms=1600){
+  const canvas = els.confetti;
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width = window.innerWidth;
+  const H = canvas.height = window.innerHeight;
+  canvas.style.display = "block";
+
+  const pieces = [];
+  const count = 130;
+  for(let i=0;i<count;i++){
+    pieces.push({
+      x: Math.random()*W,
+      y: -20 - Math.random()*H*0.2,
+      vx: (Math.random()*2-1)*3.2,
+      vy: 2 + Math.random()*5.2,
+      r: 4 + Math.random()*5,
+      a: Math.random()*Math.PI*2,
+      va: (Math.random()*2-1)*0.25,
+      h: Math.floor(Math.random()*360)
+    });
+  }
+
+  let start = performance.now();
+  function frame(now){
+    const t = now - start;
+    ctx.clearRect(0,0,W,H);
+    for(const p of pieces){
+      p.x += p.vx;
+      p.y += p.vy;
+      p.a += p.va;
+      p.vy += 0.03;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.a);
+      ctx.fillStyle = `hsla(${p.h}, 90%, 55%, .9)`;
+      ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
+      ctx.restore();
+    }
+    if(t < ms) requestAnimationFrame(frame);
+    else{
+      canvas.style.display = "none";
+      ctx.clearRect(0,0,W,H);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+/* Steps (Near 100):
+   Let e1 = 100 - a, e2 = 100 - b
+   100 + 100 = 200
+   extra = e1 + e2
+   answer = 200 - extra
+*/
+function buildStepsHTML(a,b){
+  const e1 = 100 - a;
+  const e2 = 100 - b;
+  const extra = e1 + e2;
+  const total = 200 - extra;
+
+  const box0 = `
+    <div class="stepBox">
+      <span class="label">EXTRA</span>
+      <div class="small" style="margin-top:4px;">Find how much each number needs to reach 100.</div>
+      <div class="eqLine">100 − ${a} = ${e1}</div>
+      <div class="eqLine">100 − ${b} = ${e2}</div>
+    </div>
+  `;
+  const box1 = `
+    <div class="stepBox step1">
+      <span class="label">STEP 1</span>
+      <div class="small" style="margin-top:4px;">Make two hundreds.</div>
+      <div class="eqLine">${a} + ${e1} = 100</div>
+      <div class="eqLine">${b} + ${e2} = 100</div>
+      <div class="eqLine">100 + 100 = 200</div>
+    </div>
+  `;
+  const box2 = `
+    <div class="stepBox step2">
+      <span class="label">STEP 2</span>
+      <div class="small" style="margin-top:4px;">Subtract the extra you added.</div>
+      <div class="eqLine">${e1} + ${e2} = ${extra}</div>
+      <div class="eqLine">200 − ${extra} = ${total}</div>
+    </div>
+  `;
+  return box0 + box1 + box2;
+}
+
+function loadQuestion(i){
+  idx = i;
+  const q = QUESTIONS[idx];
+  const ans = q.a + q.b;
+
+  els.qIndexTxt.textContent = String(idx+1);
+  els.qTotalTxt.textContent = String(QUESTIONS.length);
+  els.qCountPill.textContent = `${QUESTIONS.length} questions`;
+
+  els.aTxt.textContent = String(q.a);
+  els.bTxt.textContent = String(q.b);
+
+  els.stepsBox.innerHTML = buildStepsHTML(q.a, q.b);
+  els.revealAns.textContent = String(ans);
+
+  renderProgress();
+  updateSideUI();
+  startTimer();
+
+  setTimeout(()=>{ try{ els.ansInput.focus(); }catch{} }, 60);
+}
+
+function handleWrong(){
+  hadWrong[idx] = true;               // scoring rule
+  els.hintBox.classList.add("show");  // show steps
+  playSound("wrong");
+
+  els.ansInput.classList.remove("shake");
+  void els.ansInput.offsetWidth;
+  els.ansInput.classList.add("shake");
+
+  setStatus("Not yet — make 100 + 100 = 200, then subtract the extra.", "bad");
+  els.buddyTitle.textContent = "Try again!";
+  els.buddyText.textContent = "Find the extra to reach 100, then do 200 − extra.";
+}
+
+function onTimeUp(){
+  hadWrong[idx] = true;              // time up counts as wrong attempt
+  els.hintBox.classList.add("show");
+  timedOutThisQ = true;
+  practiceMode = true;
+
+  if(status[idx] !== "correct") status[idx] = "timeout";
+  renderProgress();
+
+  playSound("wrong");
+  setStatus("Time’s up — answer revealed. Try again to practice, or press Next.", "bad");
+
+  els.revealBox.classList.add("show");
+  els.tryAgainBtn.style.display = "inline-flex";
+  els.nextBtn.disabled = false; // can move on after time-up
+  updateSideUI();
+}
+
+function handleCorrect(){
+  stopTimer();
+  playSound("correct");
+  confettiBoom(1600);
+
+  locked = true;
+  els.ansInput.disabled = true;
+  els.checkBtn.disabled = true;
+
+  /* IMPORTANT: pupils cannot press Next when correct */
+  els.nextBtn.disabled = true;
+
+  // Score only if:
+  // - not timed out
+  // - not practice mode
+  // - no wrong attempt happened on this question
+  // - not already marked
+  const canScore = (!timedOutThisQ && !practiceMode && status[idx] !== "timeout" && !hadWrong[idx]);
+
+  if(canScore && status[idx] !== "correct"){
+    status[idx] = "correct";
+    score++;
+  } else {
+    // Correct eventually but 0 mark (unless already timeout)
+    if(status[idx] !== "timeout") status[idx] = "done";
+  }
+
+  renderProgress();
+  updateSideUI();
+
+  setStatus("Correct! 🎉 Next question in 2 seconds…", "good");
+  els.buddyTitle.textContent = "Awesome!";
+  els.buddyText.textContent = "Auto-going to the next question.";
+
+  setTimeout(()=>goNext(), 2000);
+}
+
+function checkAnswer(){
+  if(locked) return;
+
+  const q = QUESTIONS[idx];
+  const correct = q.a + q.b;
+  const raw = (els.ansInput.value || "").trim();
+  const val = parseInt(raw, 10);
+
+  if(!Number.isFinite(val)) return handleWrong();
+  if(val === correct) return handleCorrect();
+  return handleWrong();
+}
+
+function goNext(){
+  if(idx < QUESTIONS.length - 1){
+    loadQuestion(idx + 1);
+  }else{
+    showResults();
+  }
+}
+
+function tryAgain(){
+  // after time-up: practice (no marks)
+  practiceMode = true;
+  timedOutThisQ = false;
+
+  els.revealBox.classList.remove("show");
+  els.ansInput.value = "";
+  els.ansInput.disabled = false;
+  els.checkBtn.disabled = false;
+  els.nextBtn.disabled = false; // can move on
+  setStatus("Practice try (no marks). Use the steps and try again!", "neutral");
+  els.buddyTitle.textContent = "Practice time!";
+  els.buddyText.textContent = "Use the steps: make 200, then subtract the extra.";
+
+  stopTimer();
+  secondsTotal = timingSeconds;
+  secondsLeft = secondsTotal;
+  setTimerVisual();
+  updateSideUI();
+
+  timer = setInterval(()=>{
+    if(locked) return;
+    secondsLeft--;
+    setTimerVisual();
+    if(secondsLeft <= 0){
+      stopTimer();
+      playSound("wrong");
+      els.hintBox.classList.add("show");
+      els.revealBox.classList.add("show");
+      setStatus("Time’s up again — answer revealed.", "bad");
+    }
+  }, 1000);
+}
+
+function showResults(){
+  stopTimer();
+
+  els.questionView.style.display = "none";
+  els.resultsView.classList.add("show");
+
+  els.finalScore.textContent = String(score);
+  els.finalTotal.textContent = String(QUESTIONS.length);
+
+  let msg = "Nice work! 200 − extra is powerful near 100.";
+  if(score === QUESTIONS.length) msg = "Perfect score! 🌟 Try 20 seconds next time!";
+  else if(score >= Math.ceil(QUESTIONS.length*0.7)) msg = "Great job! Watch the first try to score more!";
+  else msg = "Good effort! Remember: first wrong try = 0 marks for that question.";
+  els.finalMsg.textContent = msg;
+
+  els.finalDots.innerHTML = "";
+  for(let i=0;i<QUESTIONS.length;i++){
+    const d = document.createElement("div");
+    d.className = "dot";
+    d.textContent = String(i+1);
+    if(status[i]==="correct") d.classList.add("good");
+    if(status[i]==="timeout") d.classList.add("bad");
+    if(status[i]==="done") d.classList.add("done");
+    els.finalDots.appendChild(d);
+  }
+}
+
+function rebuildQuestionSet(){
+  QUESTIONS = generateNear100(TOTAL_Q, RANGE_MIN, RANGE_MAX);
+  status = Array(QUESTIONS.length).fill(null);
+  hadWrong = Array(QUESTIONS.length).fill(false);
+}
+
+function restartAll(){
+  stopTimer();
+  rebuildQuestionSet();
+
+  idx = 0;
+  score = 0;
+
+  els.resultsView.classList.remove("show");
+  els.questionView.style.display = "block";
+
+  loadQuestion(0);
+}
+
+/* Timing panel */
+function openTiming(){
+  els.timingPanel.classList.add("show");
+  els.timingPanel.setAttribute("aria-hidden","false");
+}
+function closeTiming(){
+  els.timingPanel.classList.remove("show");
+  els.timingPanel.setAttribute("aria-hidden","true");
+}
+
+/* Wiring */
+els.checkBtn.addEventListener("click", checkAnswer);
+els.ansInput.addEventListener("keydown", (e)=>{ if(e.key==="Enter") checkAnswer(); });
+els.nextBtn.addEventListener("click", goNext);
+els.tryAgainBtn.addEventListener("click", tryAgain);
+
+els.soundBtn.addEventListener("click", ()=>{
+  soundOn = !soundOn;
+  updateSideUI();
+  // unlock audio on user gesture
+  if(soundOn){
+    try{
+      sndWrong.play().then(()=>{ sndWrong.pause(); sndWrong.currentTime=0; }).catch(()=>{});
+      sndCorrect.play().then(()=>{ sndCorrect.pause(); sndCorrect.currentTime=0; }).catch(()=>{});
+    }catch{}
+  }
+});
+
+els.timingBtn.addEventListener("click", openTiming);
+els.closeTiming.addEventListener("click", closeTiming);
+
+els.timeRange.value = String(timingSeconds);
+els.timeVal.textContent = String(timingSeconds);
+
+els.timeRange.addEventListener("input", ()=>{
+  els.timeVal.textContent = els.timeRange.value;
+});
+els.applyTiming.addEventListener("click", ()=>{
+  const v = Math.max(10, Math.min(60, parseInt(els.timeRange.value,10) || 25));
+  timingSeconds = v;
+  closeTiming();
+  loadQuestion(idx); // restart current question timer with new timing
+});
+els.resetTiming.addEventListener("click", ()=>{
+  timingSeconds = 25;
+  els.timeRange.value = "25";
+  els.timeVal.textContent = "25";
+});
+
+els.restartAll.addEventListener("click", restartAll);
+els.restartFromResults.addEventListener("click", restartAll);
+
+/* Init */
+rebuildQuestionSet();
+loadQuestion(0);
+updateSideUI();
+</script>
+</body>
+</html>
